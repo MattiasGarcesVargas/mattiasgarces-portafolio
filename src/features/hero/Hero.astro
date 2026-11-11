@@ -1,0 +1,87 @@
+---
+/**
+ * Act 01 — "El horizonte". The name is split by the equator: design above, code below.
+ * Elements marked [data-intro] start hidden only when motion runs (see global.css).
+ */
+import EquatorLine from "../../shared/ui/EquatorLine.astro";
+import LangSwitch from "../../shared/ui/LangSwitch.astro";
+import LocalTime from "../../shared/ui/LocalTime.astro";
+import { getLocale, useTranslations } from "../../shared/i18n/utils";
+
+const t = useTranslations(getLocale(Astro.url));
+const nameSize = "font-display text-[clamp(5.5rem,17vw,15.5rem)] leading-[0.8] tracking-[-0.045em]";
+---
+
+<header
+  class="relative flex min-h-svh flex-col justify-between overflow-hidden px-gutter pt-7 pb-8"
+  data-motion="hero"
+  data-theme="paper"
+  aria-labelledby="hero-title"
+>
+  <div class="flex items-start justify-between gap-4" data-hero-out>
+    <div class="flex items-center gap-3" data-intro data-hero-fade>
+      <span class="font-display text-[28px] leading-none tracking-[-0.04em]">MG</span>
+      <span
+        class="grid size-[34px] place-items-center rounded-full border border-text font-display text-base leading-none"
+        aria-hidden="true">0°</span
+      >
+    </div>
+    <span class="hidden font-mono text-[13px] tracking-[0.02em] text-muted md:inline" data-intro data-hero-fade>
+      {t.brand.coordinates}
+    </span>
+    <div class="flex items-center gap-4 sm:gap-6" data-intro data-hero-fade>
+      <span class="font-mono text-[13px] tracking-[0.02em] text-muted">{t.brand.city} — <LocalTime /></span>
+      <LangSwitch />
+    </div>
+  </div>
+
+  <div class="relative py-6 md:py-0">
+    <div class="mb-3 max-w-64 md:absolute md:right-0 md:bottom-[calc(50%+1.75rem)] md:mb-0 md:text-right" data-hero-out>
+      <p data-intro data-hero-fade>
+        <span class="block font-mono text-[11px] tracking-[0.08em] text-muted uppercase">{t.hero.designLabel}</span>
+        <span class="mt-1.5 block text-sm leading-snug">{t.hero.design}</span>
+      </p>
+    </div>
+
+    <h1 id="hero-title" class="flex flex-col gap-[clamp(2.25rem,4.5vw,4rem)]">
+      <span class="block overflow-clip pt-[0.1em] pb-[0.04em]" data-hero-half="top">
+        <span class:list={["block", nameSize]} data-intro data-hero-word>Mattias</span>
+      </span>
+      {" "}
+      <span class="block self-end overflow-clip pt-[0.04em] pb-[0.14em] md:pr-[4vw]" data-hero-half="bottom">
+        <span class:list={["block italic", nameSize]} data-intro data-hero-word>Garcés</span>
+      </span>
+    </h1>
+
+    <div class="pointer-events-none absolute inset-x-[calc(var(--spacing-gutter)*-1)] top-1/2" data-hero-horizon>
+      <EquatorLine />
+    </div>
+
+    <div
+      class="mt-3 ml-auto max-w-64 text-right md:absolute md:top-[calc(50%+1.75rem)] md:left-0 md:mt-0 md:ml-0 md:text-left"
+      data-hero-out
+    >
+      <p data-intro data-hero-fade>
+        <span class="block font-mono text-[11px] tracking-[0.08em] text-muted uppercase">{t.hero.codeLabel}</span>
+        <span class="mt-1.5 block text-sm leading-snug">{t.hero.code}</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="flex items-end justify-between gap-4" data-hero-out>
+    <p class="flex items-center gap-2.5" data-intro data-hero-fade>
+      <span class="size-2 rounded-full bg-accent" aria-hidden="true"></span>
+      <span class="font-mono text-[11px] tracking-[0.08em] uppercase">{t.hero.available}</span>
+    </p>
+    <p class="hidden max-w-80 text-sm leading-relaxed text-muted lg:block" data-intro data-hero-fade>
+      {t.brand.tagline}
+    </p>
+    <span class="font-mono text-[11px] tracking-[0.08em] text-muted uppercase" data-intro data-hero-fade>
+      {t.hero.scroll}
+    </span>
+  </div>
+</header>
+
+<script>
+  import "./hero.motion";
+</script>
