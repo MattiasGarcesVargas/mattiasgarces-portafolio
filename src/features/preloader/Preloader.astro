@@ -1,0 +1,41 @@
+---
+/**
+ * Act 00 — first visit of the session only. Hidden unless JS runs and motion is allowed
+ * (see global.css), so it never blocks content.
+ */
+import { getLocale, useTranslations } from "../../shared/i18n/utils";
+
+const t = useTranslations(getLocale(Astro.url));
+---
+
+<div
+  class="fixed inset-0 z-[100] hidden font-mono text-[11px] tracking-[0.08em] uppercase"
+  data-preloader
+  data-motion="preloader"
+  data-theme="ink"
+  aria-hidden="true"
+>
+  <div class="absolute inset-x-0 top-0 h-1/2 bg-ink" data-preloader-half="top"></div>
+  <div class="absolute inset-x-0 bottom-0 h-1/2 bg-ink" data-preloader-half="bottom"></div>
+
+  <div class="absolute inset-x-0 top-1/2 h-px bg-[#2a2f3a]" data-preloader-track></div>
+  <div class="absolute inset-x-0 top-1/2 h-px origin-left bg-accent" style="transform: scaleX(0)" data-preloader-fill></div>
+  <div class="absolute top-1/2 left-0 -mt-1.5 -ml-1.5 size-3 rounded-full bg-accent" data-preloader-dot></div>
+
+  <div class="absolute inset-0 text-muted" data-preloader-content>
+    <div class="absolute inset-x-gutter top-7 flex justify-between gap-4">
+      <span>{t.preloader.coordinates}</span>
+      <span class="hidden sm:inline">{t.preloader.loading}</span>
+      <span>{t.brand.city}</span>
+    </div>
+    <span class="absolute bottom-9 left-gutter text-[13px] tracking-[0.02em]">MG · 0°</span>
+    <span
+      class="absolute right-gutter bottom-6 font-display text-[clamp(6rem,15vw,14rem)] leading-[0.8] tracking-[-0.04em] text-text tabular-nums normal-case"
+      data-preloader-count>000</span
+    >
+  </div>
+</div>
+
+<script>
+  import "./preloader.motion";
+</script>
