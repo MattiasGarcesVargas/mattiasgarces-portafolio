@@ -1,0 +1,69 @@
+---
+/**
+ * Act 04 — how I work. On desktop the four cards stick and stack on top of each other;
+ * on mobile (and without JS) they are a plain vertical list.
+ * The last step closes in ink, the way the site closes.
+ */
+import { getLocale, useTranslations } from "../../shared/i18n/utils";
+
+const t = useTranslations(getLocale(Astro.url));
+const steps = t.process.steps;
+const pad = (n: number) => String(n).padStart(2, "0");
+/** Each card sticks a little lower than the previous one, so their edges stay visible as a stack. */
+const stickyTop = (index: number) => `calc(12svh + ${index * 1.75}rem)`;
+---
+
+<section
+  class="px-gutter pt-[clamp(6rem,10vw,10rem)] pb-[clamp(6rem,10vw,10rem)]"
+  data-motion="process"
+  data-theme="paper"
+  aria-labelledby="process-title"
+>
+  <div class="mb-[clamp(3rem,6vw,4.5rem)] grid grid-cols-12 gap-x-6 gap-y-6">
+    <h2
+      id="process-title"
+      class="col-span-12 font-display text-[clamp(3.5rem,8vw,8rem)] leading-[0.9] tracking-[-0.035em] md:col-span-7"
+    >
+      {t.process.title} <em>{t.process.titleEm}</em>
+    </h2>
+    <p class="col-span-12 max-w-[40ch] self-end text-base leading-relaxed text-muted md:col-span-4 md:col-start-9">
+      {t.process.intro}
+    </p>
+  </div>
+
+  <ol class="flex flex-col gap-4 md:gap-[18svh]">
+    {
+      steps.map((step, index) => {
+        const last = index === steps.length - 1;
+        return (
+          <li class="md:sticky" style={`top: ${stickyTop(index)}`} data-process-card>
+            <article
+              class:list={[
+                "grid origin-top grid-cols-12 content-start gap-x-6 gap-y-5 p-[clamp(1.5rem,3vw,2.5rem)] md:min-h-[clamp(16rem,46svh,26rem)] md:gap-y-10",
+                last ? "bg-surface" : "border-t border-line bg-raised",
+              ]}
+              data-theme={last ? "ink" : undefined}
+              data-card-inner
+            >
+              <div class="contents" data-card-content>
+                <span class="col-span-12 font-mono text-[11px] tracking-[0.08em] text-muted uppercase md:col-span-2 md:pt-4">
+                  ({pad(index + 1)}/{pad(steps.length)})
+                </span>
+                <h3 class="col-span-12 font-display text-[clamp(2.75rem,5vw,4.5rem)] leading-none tracking-[-0.02em] md:col-span-5">
+                  {index === 2 ? <em>{step.title}</em> : step.title}
+                </h3>
+                <p class="col-span-12 max-w-[44ch] text-base leading-relaxed text-muted md:col-span-5 md:pt-3">
+                  {step.text}
+                </p>
+              </div>
+            </article>
+          </li>
+        );
+      })
+    }
+  </ol>
+</section>
+
+<script>
+  import "./process.motion";
+</script>
