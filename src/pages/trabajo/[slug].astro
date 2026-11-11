@@ -1,0 +1,16 @@
+---
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CaseStub, getProjects } from "../../features/work";
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+---
+
+<BaseLayout title={`${project.data.title} — Mattias Garcés`} description={project.data.summary}>
+  <CaseStub project={project} />
+</BaseLayout>

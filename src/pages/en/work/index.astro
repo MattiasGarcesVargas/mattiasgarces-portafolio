@@ -1,0 +1,11 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { WorkIndex } from "../../../features/work";
+import { useTranslations } from "../../../shared/i18n/utils";
+
+const t = useTranslations("en");
+---
+
+<BaseLayout title={`${t.work.title} ${t.work.titleEm} — Mattias Garcés`}>
+  <WorkIndex />
+</BaseLayout>
