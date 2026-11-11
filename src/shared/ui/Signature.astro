@@ -1,0 +1,21 @@
+---
+/** Hand-lettered "Designed by Mattias Garcés". Ink version on light themes, paper version on dark ones. */
+interface Props {
+  tone?: "ink" | "paper";
+  class?: string;
+}
+
+const { tone = "ink", class: className } = Astro.props;
+const src = tone === "ink" ? "/brand/firma-tinta.svg" : "/brand/firma-papel.svg";
+---
+
+<img
+  src={src}
+  alt="Designed by Mattias Garcés"
+  width="1830"
+  height="500"
+  class:list={["block h-auto w-full", className]}
+  data-signature
+  loading="lazy"
+  decoding="async"
+/>

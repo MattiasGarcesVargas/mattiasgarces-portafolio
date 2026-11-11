@@ -1,0 +1,25 @@
+---
+import { formatLocalTime } from "../lib/time";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<time class:list={["font-mono text-[13px] tracking-[0.02em] tabular-nums", className]} data-local-time>
+  {formatLocalTime()}
+</time>
+
+<script>
+  import { formatLocalTime } from "../lib/time";
+
+  const tick = () =>
+    document.querySelectorAll<HTMLTimeElement>("[data-local-time]").forEach((el) => {
+      el.textContent = formatLocalTime();
+    });
+
+  document.addEventListener("astro:page-load", tick);
+  setInterval(tick, 30_000);
+</script>
