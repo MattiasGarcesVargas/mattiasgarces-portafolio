@@ -1,0 +1,31 @@
+---
+/** /trabajo/[slug] — placeholder until the case-study template is built (fase 5). */
+import type { Project } from "./data";
+import LangSwitch from "../../shared/ui/LangSwitch.astro";
+import { getLocale, useTranslations, workPath } from "../../shared/i18n/utils";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const locale = getLocale(Astro.url);
+const t = useTranslations(locale);
+const { title, client, role, stack, summary, summaryEn, disclaimer } = project.data;
+---
+
+<article class="flex min-h-svh flex-col justify-between gap-16 px-gutter pt-28 pb-12" data-theme="marino" aria-labelledby="case-title">
+  <div class="flex items-center justify-between gap-6">
+    <a href={workPath(locale)} class="font-mono text-[11px] tracking-[0.08em] text-muted uppercase hover:text-text">
+      ← {t.work.title} {t.work.titleEm}
+    </a>
+    <LangSwitch />
+  </div>
+  <div class="flex flex-col gap-6">
+    <h1 id="case-title" class="font-display text-[clamp(4rem,12vw,11rem)] leading-[0.85] tracking-[-0.04em]">{title}</h1>
+    <p class="max-w-[48ch] text-xl leading-snug">{locale === "en" ? summaryEn : summary}</p>
+    <p class="font-mono text-[13px] tracking-[0.02em] text-muted">{client} · {role.join(", ")} · {stack.join(" / ")}</p>
+    {disclaimer && <p class="font-mono text-[10px] tracking-[0.08em] text-muted uppercase">{disclaimer}</p>}
+  </div>
+  <p class="font-mono text-[11px] tracking-[0.08em] text-muted uppercase">{t.work.caseTodo}</p>
+</article>
