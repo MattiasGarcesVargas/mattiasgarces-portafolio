@@ -1,0 +1,43 @@
+---
+/** One line of the compact project index. On desktop, hovering it shows that project's preview. */
+import { pad, type Project } from "./data";
+import { getLocale, useTranslations, workPath } from "../../shared/i18n/utils";
+
+interface Props {
+  project: Project;
+  index: number;
+}
+
+const { project, index } = Astro.props;
+const locale = getLocale(Astro.url);
+const t = useTranslations(locale);
+const { title, type, stack, year } = project.data;
+---
+
+<li>
+  <a
+    href={workPath(locale, project.id)}
+    class="group grid grid-cols-[2.5rem_minmax(0,1fr)_3rem] items-baseline gap-6 border-t border-line py-[1.375rem] md:grid-cols-[4.5rem_minmax(0,1fr)_auto_4.5rem]"
+    data-preview-index={index}
+  >
+    <span class="font-mono text-[11px] tracking-[0.08em] text-muted uppercase">({pad(index + 1)})</span>
+    <span
+      class="font-display text-[clamp(2.25rem,4vw,3.5rem)] leading-none tracking-[-0.02em] transition-transform duration-[400ms] ease-ui group-hover:translate-x-4 group-hover:italic group-focus-visible:italic"
+    >
+      {title}
+    </span>
+    <span class="hidden gap-2 md:flex">
+      <span class="rounded-[2px] border border-line px-2 py-1 font-mono text-[11px] tracking-[0.06em] uppercase">
+        [ {t.work.types[type]} ]
+      </span>
+      {
+        stack[0] && (
+          <span class="rounded-[2px] border border-line px-2 py-1 font-mono text-[11px] tracking-[0.06em] uppercase">
+            [ {stack[0]} ]
+          </span>
+        )
+      }
+    </span>
+    <span class="text-right font-mono text-[13px] tracking-[0.02em] text-muted">{year}</span>
+  </a>
+</li>

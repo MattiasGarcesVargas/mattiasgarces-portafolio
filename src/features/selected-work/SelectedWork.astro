@@ -1,0 +1,76 @@
+---
+/**
+ * Act 03 — selected work, on the navy theme. Featured projects become chapters;
+ * every project is listed in the compact index below. All of it comes from the `work` collection.
+ */
+import ProjectChapter from "./ProjectChapter.astro";
+import ProjectRow from "./ProjectRow.astro";
+import { getAllProjects, getFeaturedProjects } from "./data";
+import { getLocale, useTranslations, workPath } from "../../shared/i18n/utils";
+
+const locale = getLocale(Astro.url);
+const t = useTranslations(locale);
+const featured = await getFeaturedProjects();
+const all = await getAllProjects();
+---
+
+<section
+  class="pt-[clamp(6rem,10vw,9rem)] pb-[clamp(5rem,8vw,7.5rem)]"
+  data-motion="selected-work"
+  data-theme="marino"
+  aria-labelledby="work-title"
+>
+  <div class="mb-[clamp(4rem,7vw,6rem)] flex flex-wrap items-end justify-between gap-6 px-gutter">
+    <h2 id="work-title" class="font-display text-[clamp(3.5rem,8vw,8rem)] leading-[0.9] tracking-[-0.035em]">
+      {t.work.title}<br /><em>{t.work.titleEm}</em>
+    </h2>
+  </div>
+
+  <div class="flex flex-col gap-[clamp(6rem,10vw,9rem)]">
+    {featured.map((project, index) => <ProjectChapter project={project} index={index} />)}
+  </div>
+
+  <div class="mt-[clamp(7rem,11vw,10rem)] px-gutter">
+    <span class="mb-6 block font-mono text-[11px] tracking-[0.08em] text-muted uppercase">{t.work.index}</span>
+    <ul class="border-b border-line" data-project-list>
+      {all.map((project, index) => <ProjectRow project={project} index={index} />)}
+    </ul>
+    <div class="mt-10 flex justify-end">
+      <a
+        href={workPath(locale)}
+        class="inline-flex h-13 items-center gap-3 border border-line px-6 text-sm font-medium transition-colors duration-[400ms] ease-ui hover:border-text"
+      >
+        {t.work.viewAll}
+        <svg class="size-3.5" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M2 12 12 2M4.5 2H12v7.5"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div
+    class="pointer-events-none fixed top-0 left-0 z-40 hidden aspect-[4/5] w-64 overflow-hidden"
+    data-preview
+    aria-hidden="true"
+  >
+    {
+      all.map((project) => (
+        <div
+          class="absolute inset-0 flex items-end p-3 font-mono text-[10px] tracking-[0.08em] text-paper/80 uppercase opacity-0"
+          style={`background: ${project.data.accent};`}
+          data-preview-layer
+        >
+          {project.data.videoPoster ? (
+            <img class="absolute inset-0 size-full object-cover" src={project.data.videoPoster} alt="" />
+          ) : (
+            <span>[ {project.data.title} ]</span>
+          )}
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  import "./selected-work.motion";
+</script>
