@@ -1,0 +1,111 @@
+---
+/**
+ * Statement — right after the hero. A giant condensed sentence that slides sideways while the
+ * section is pinned; letters arrive scattered and settle as they cross the screen, hand-drawn
+ * strokes write themselves and two line icons pop in. Mobile stacks it vertically.
+ * Recreated from the horizontal statement on sachith-tharinda-2026.webflow.io, in the 0° palette.
+ */
+import { getLocale, useTranslations } from "../../shared/i18n/utils";
+
+const t = useTranslations(getLocale(Astro.url));
+const [lead, role, amp, closing] = t.statement.segments;
+const sentence = t.statement.segments.join(" ");
+/** Hand-drawn strokes are placed against one-line text, so they only exist on desktop. */
+const stroke = "hidden fill-none stroke-accent [stroke-linecap:round] [stroke-linejoin:round] md:block";
+---
+
+<section
+  class="relative overflow-hidden md:h-svh"
+  data-motion="statement"
+  data-theme="paper"
+  aria-label={sentence}
+>
+  <div
+    class="flex flex-col gap-[0.35em] px-gutter py-[clamp(5rem,12vw,8rem)] font-condensed text-[17vw] leading-[1.1] uppercase md:h-full md:w-max md:flex-row md:items-center md:gap-[0.5em] md:py-0 md:pr-[45vw] md:pl-[14vw] md:text-[min(18svh,10rem)] md:whitespace-nowrap"
+    aria-hidden="true"
+    data-statement-track
+  >
+    <div class="relative">
+      <p data-statement-line>{lead}</p>
+      <svg
+        class="absolute -top-[0.62em] left-[28%] size-[0.55em] stroke-text"
+        viewBox="0 0 100 100"
+        fill="none"
+        stroke-width="2"
+        data-statement-icon
+      >
+        <g data-statement-spin>
+          <path d="M50 6 88 28v44L50 94 12 72V28z"></path>
+          <path d="M50 6 88 72H12zM50 94 12 28h76z" stroke-opacity="0.55"></path>
+          <g class="fill-paper">
+            <circle cx="50" cy="6" r="4.5"></circle><circle cx="88" cy="28" r="4.5"></circle>
+            <circle cx="88" cy="72" r="4.5"></circle><circle cx="50" cy="94" r="4.5"></circle>
+            <circle cx="12" cy="72" r="4.5"></circle><circle cx="12" cy="28" r="4.5"></circle>
+          </g>
+        </g>
+      </svg>
+      <svg
+        class:list={["absolute right-0 -bottom-[0.32em] h-[0.42em] w-[42%]", stroke]}
+        viewBox="0 0 450 70"
+        preserveAspectRatio="none"
+      >
+        <path
+          vector-effect="non-scaling-stroke"
+          stroke-width="3"
+          d="M2 30C120 18 300 16 448 22 340 26 220 34 150 40c60 2 110 4 100 12-6 6-22 10-40 16"
+          data-statement-draw></path>
+      </svg>
+    </div>
+
+    <div class="relative">
+      <p data-statement-line>{role}</p>
+      <svg
+        class:list={["absolute -top-[0.4em] left-0 h-[0.5em] w-[50%]", stroke]}
+        viewBox="0 0 600 120"
+        preserveAspectRatio="none"
+      >
+        <path
+          vector-effect="non-scaling-stroke"
+          stroke-width="3"
+          d="M4 108c116 6 246 4 314-12 54-14 74-46 42-64-30-16-74-6-70 24 4 30 70 42 150 44 60 2 120 0 156-4"
+          data-statement-draw></path>
+      </svg>
+      <svg
+        class="absolute -bottom-[0.6em] left-[50%] size-[1em]"
+        viewBox="0 0 120 120"
+        fill="none"
+        data-statement-icon
+      >
+        <g data-statement-spin>
+          <circle cx="60" cy="60" r="30" class="fill-paper stroke-text" stroke-width="2"></circle>
+          <path d="M44 42a22 22 0 0 1 22-8" class="stroke-text" stroke-width="2" stroke-linecap="round" stroke-opacity="0.5"></path>
+          <ellipse cx="60" cy="60" rx="56" ry="15" class="stroke-accent" stroke-width="2" transform="rotate(-18 60 60)"></ellipse>
+          <ellipse cx="60" cy="60" rx="54" ry="13" class="stroke-text" stroke-width="1.5" stroke-opacity="0.45" transform="rotate(28 60 60)"></ellipse>
+        </g>
+      </svg>
+    </div>
+
+    <div class="relative">
+      <p data-statement-line>{amp}</p>
+    </div>
+
+    <div class="relative">
+      <p data-statement-line>{closing}</p>
+      <svg
+        class:list={["absolute -top-[0.25em] -left-[0.15em] h-[1.45em] w-[62%]", stroke]}
+        viewBox="0 0 520 220"
+        preserveAspectRatio="none"
+      >
+        <path
+          vector-effect="non-scaling-stroke"
+          stroke-width="3"
+          d="M40 196c120-10 290-30 390-70 90-36 70-112-50-118C240 2 110 18 30 52"
+          data-statement-draw></path>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<script>
+  import "./statement.motion";
+</script>
