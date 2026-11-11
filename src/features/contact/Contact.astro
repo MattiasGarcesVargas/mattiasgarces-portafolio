@@ -1,0 +1,151 @@
+---
+/**
+ * Act 07 — contact and footer, in ink. The call to talk, the "contact me" polaroid you drag away to
+ * reveal email and LinkedIn (struck through on hover), the signature writing itself as you reach
+ * the end, and the social links.
+ * A 2px ink edge above the footer hides any sub-pixel seam with the light section before it.
+ */
+import Signature from "../../shared/ui/Signature.astro";
+import SocialIcon from "../../shared/ui/SocialIcon.astro";
+import { EMAIL, socials } from "../../shared/lib/social";
+import { getLocale, useTranslations } from "../../shared/i18n/utils";
+
+const t = useTranslations(getLocale(Astro.url));
+const linkedin = socials.find((s) => s.network === "linkedin")?.href;
+/** Photo inside the polaroid (square, under /public/contact). */
+const photo: string | undefined = "/contact/mattias.webp";
+
+/** A line crosses the word on hover or keyboard focus. Pure CSS: the effect lives on the word itself. */
+const strike = [
+  "relative inline-block outline-offset-8",
+  "after:pointer-events-none after:absolute after:top-[55%] after:-right-[0.08em] after:-left-[0.08em] after:h-[0.07em] after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-[500ms] after:ease-heavy after:content-['']",
+  "hover:after:scale-x-100 focus-visible:after:scale-x-100",
+];
+---
+
+<footer
+  class="relative flex flex-col gap-[clamp(3rem,6vw,4rem)] px-gutter before:pointer-events-none before:absolute before:inset-x-0 before:-top-0.5 before:h-0.5 before:bg-surface before:content-[''] pt-[clamp(5rem,9vw,7rem)] pb-8 md:min-h-svh md:justify-between md:gap-[clamp(1rem,2.5vh,2.25rem)] md:pt-[clamp(2rem,6vh,5rem)] md:pb-6"
+  data-motion="contact"
+  data-theme="ink"
+  aria-labelledby="contact-title"
+>
+  <h2
+    id="contact-title"
+    class="max-w-[20ch] font-display text-[clamp(2.25rem,min(5.2vw,8vh),5rem)] leading-[0.92] tracking-[-0.035em]"
+  >
+    {t.contact.headline}
+  </h2>
+
+  <!--
+    "Contact me", recreated from jhosuemesias.com: a polaroid covers the message and its links;
+    drag it away to reveal them. Without JS the polaroid is hidden (global.css) so the links stay reachable.
+  -->
+  <div class="flex flex-col gap-4 font-hand uppercase md:gap-[clamp(0.5rem,2vh,1rem)]">
+    <h3 class="text-center text-[2.25rem] leading-[1.2] font-bold tracking-[0.08em] md:text-[clamp(1.75rem,2.4vw,2.5rem)]" data-contact-title>
+      {t.contact.contactMe}
+    </h3>
+    <div class="relative min-h-[42rem] md:h-[clamp(16rem,46vh,31rem)] md:min-h-0" data-contact-stage>
+
+      <img
+        class="pointer-events-none absolute top-[4%] left-0 w-[9.5rem] select-none md:top-1/2 md:left-1/4 md:w-[clamp(11rem,17vw,16rem)] md:-translate-x-1/2 md:-translate-y-1/2"
+        src="/contact/drag-the-picture.webp"
+        alt={t.contact.dragHint}
+        width="700"
+        height="560"
+        loading="lazy"
+        decoding="async"
+        draggable="false"
+      />
+
+      <div
+        class="absolute right-[9%] bottom-[12%] w-[15rem] text-[1.5rem] leading-[1.15] md:top-1/2 md:right-auto md:bottom-auto md:left-3/4 md:w-[min(19rem,20vw)] md:-translate-x-1/2 md:-translate-y-1/2 md:text-[clamp(1.375rem,1.9vw,1.875rem)]"
+        data-contact-message
+      >
+        <p class="text-center">{t.contact.workTogether}<br />{t.contact.sendDm}</p>
+        <p class="mt-5 flex items-baseline justify-center gap-[clamp(1.25rem,2.4vw,2rem)]">
+          <a href={`mailto:${EMAIL}`} class:list={strike}>{t.contact.email}</a>
+          <span class="text-muted">{t.contact.or}</span>
+          {
+            linkedin && (
+              <a href={linkedin} target="_blank" rel="noopener noreferrer" class:list={strike}>
+                LinkedIn
+              </a>
+            )
+          }
+        </p>
+      </div>
+
+      <figure
+        class="absolute right-[3%] bottom-[2%] m-0 w-[min(19rem,80%)] cursor-grab touch-none bg-paper p-[0.75rem] pb-0 text-ink md:p-[clamp(0.75rem,1.1vw,1.125rem)] md:pb-0 select-none active:cursor-grabbing md:top-1/2 md:right-auto md:bottom-auto md:left-3/4 md:w-[min(clamp(16.5rem,26vw,24rem),38vh)] md:-translate-x-1/2 md:-translate-y-1/2"
+        style="transform: rotate(7deg)"
+        data-contact-polaroid
+      >
+        <div class="relative aspect-[1/0.95] overflow-hidden bg-marino">
+          {
+            photo ? (
+              <img
+                class="size-full object-cover"
+                src={photo}
+                alt={t.contact.photoAlt}
+                width="900"
+                height="900"
+                loading="lazy"
+                decoding="async"
+                draggable="false"
+              />
+            ) : (
+              <span class="absolute bottom-2 left-2 font-mono text-[10px] tracking-[0.08em] text-paper normal-case">
+                [ {t.contact.photoPending} ]
+              </span>
+            )
+          }
+        </div>
+        <figcaption class="py-[0.7em] text-center text-[1.25rem] leading-none normal-case md:text-[clamp(1.125rem,1.5vw,1.5rem)]">
+          Mattias Garcés
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="flex flex-col items-center gap-[clamp(0.75rem,2vh,1.25rem)]">
+    <div class="w-full max-w-[11rem] md:w-[11%] md:max-w-[13rem]" data-signature-reveal>
+      <Signature tone="paper" />
+    </div>
+    <div class="flex justify-center">
+      <nav aria-label={t.contact.socials}>
+        <ul class="flex items-center gap-1">
+          {
+            socials.map(({ network, label, href }) => (
+              <li>
+                {href ? (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    class="grid size-11 place-items-center text-text transition-colors duration-[400ms] ease-ui hover:text-accent"
+                  >
+                    <SocialIcon network={network} />
+                  </a>
+                ) : (
+                  <span
+                    class="grid size-11 place-items-center text-muted"
+                    role="img"
+                    aria-label={`${label} (${t.contact.pending})`}
+                    title={`${label} — ${t.contact.pending}`}
+                  >
+                    <SocialIcon network={network} />
+                  </span>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script>
+  import "./contact.motion";
+</script>

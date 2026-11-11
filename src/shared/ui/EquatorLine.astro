@@ -1,0 +1,10 @@
+---
+/** The equator: a 1px rule in the section's accent. Motion hooks onto [data-equator]. */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={["h-px w-full origin-left bg-accent", className]} data-equator aria-hidden="true"></div>

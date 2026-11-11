@@ -1,0 +1,37 @@
+---
+/** /trabajo — every project. TODO(fase 5): filters by type and hover previews. */
+import { getProjects } from "./data";
+import LangSwitch from "../../shared/ui/LangSwitch.astro";
+import { getLocale, homePath, useTranslations, workPath } from "../../shared/i18n/utils";
+
+const locale = getLocale(Astro.url);
+const t = useTranslations(locale);
+const projects = await getProjects();
+---
+
+<section class="min-h-svh px-gutter pt-28 pb-24" data-theme="marino" aria-labelledby="work-index-title">
+  <div class="flex items-center justify-between gap-6">
+    <a href={homePath(locale)} class="font-mono text-[11px] tracking-[0.08em] text-muted uppercase hover:text-text">← {t.work.back}</a>
+    <LangSwitch />
+  </div>
+  <h1 id="work-index-title" class="mt-10 mb-16 font-display text-[clamp(3.5rem,8vw,8rem)] leading-[0.9] tracking-[-0.035em]">
+    {t.work.title} <em>{t.work.titleEm}</em>
+  </h1>
+  <ul class="border-b border-line">
+    {
+      projects.map((project) => (
+        <li>
+          <a
+            href={workPath(locale, project.id)}
+            class="flex items-baseline justify-between gap-6 border-t border-line py-6 hover:italic"
+          >
+            <span class="font-display text-[clamp(2.25rem,4vw,3.5rem)] leading-none">{project.data.title}</span>
+            <span class="font-mono text-[11px] tracking-[0.08em] text-muted uppercase">
+              {t.work.types[project.data.type]}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>

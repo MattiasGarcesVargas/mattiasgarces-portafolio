@@ -1,0 +1,54 @@
+---
+/**
+ * A project's looping screen recording, framed and tinted with the project's blue.
+ * Until the recording exists it shows a labelled placeholder instead of a fake image.
+ * The inner layer is taller than the frame so it has room to parallax.
+ */
+import type { Project } from "./data";
+import { getLocale, useTranslations } from "../../shared/i18n/utils";
+
+interface Props {
+  project: Project;
+  aspect: string;
+}
+
+const { project, aspect } = Astro.props;
+const { title, video, videoPoster, accent } = project.data;
+const t = useTranslations(getLocale(Astro.url));
+---
+
+<div class="relative overflow-hidden" style={`aspect-ratio: ${aspect}; background: ${accent};`} data-chapter-frame>
+  <div class="absolute inset-x-0 -top-[12%] h-[124%]" data-parallax>
+    {
+      video ? (
+        <video
+          class="size-full object-cover"
+          src={video}
+          poster={videoPoster}
+          muted
+          loop
+          playsinline
+          preload="none"
+          aria-label={title}
+          data-chapter-video
+        />
+      ) : (
+        <div class="size-full" />
+      )
+    }
+  </div>
+
+  <div
+    class="absolute inset-0 flex flex-col justify-between p-3 font-mono text-[11px] tracking-[0.08em] text-paper uppercase *:flex *:justify-between *:gap-4 [&_span_span]:bg-marino/85 [&_span_span]:px-2 [&_span_span]:py-1"
+  >
+    <span>
+      <span>● {t.work.loop}</span>
+      {!video && <span>{t.work.videoPending}</span>}
+    </span>
+    <span>
+      <span>[ {title} ]</span>
+      <span>{t.work.viewCase}</span>
+    </span>
+  </div>
+  <div class="absolute bottom-0 left-0 h-0.5 w-full origin-left bg-cielo" style="transform: scaleX(0)" data-loop-bar></div>
+</div>

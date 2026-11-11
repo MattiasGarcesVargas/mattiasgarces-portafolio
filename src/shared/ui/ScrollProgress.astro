@@ -1,0 +1,50 @@
+---
+/** The equator, once the hero is gone: a 1px line at the top that fills with the page's scroll. */
+---
+
+<div
+  class="pointer-events-none fixed inset-x-0 top-0 z-50 h-px origin-left bg-accent opacity-0"
+  style="transform: scaleX(0)"
+  data-motion="progress"
+  aria-hidden="true"
+  transition:persist="scroll-progress"
+>
+</div>
+
+<script>
+  import { gsap, registerMotion, ScrollTrigger } from "../motion/core";
+
+  registerMotion("progress", (root, { reduce }) => {
+    if (reduce) return;
+
+    gsap.to(root, {
+      scaleX: 1,
+      ease: "none",
+      scrollTrigger: { start: 0, end: "max", scrub: true },
+    });
+
+    // Appears as the hero's horizon fades out, so the line reads as one continuous object.
+    gsap.fromTo(
+      root,
+      { opacity: 0 },
+      {
+        opacity: 1,
+        ease: "none",
+        scrollTrigger: { start: () => window.innerHeight * 0.6, end: () => window.innerHeight * 0.9, scrub: true },
+      },
+    );
+
+    // Leaves before the last screen, so the closing section is not crossed by a line at its top edge.
+    const max = () => ScrollTrigger.maxScroll(window);
+    gsap.fromTo(
+      root,
+      { opacity: 1 },
+      {
+        opacity: 0,
+        ease: "none",
+        immediateRender: false,
+        scrollTrigger: { start: () => max() - window.innerHeight * 0.9, end: () => max() - window.innerHeight * 0.5, scrub: true },
+      },
+    );
+  });
+</script>

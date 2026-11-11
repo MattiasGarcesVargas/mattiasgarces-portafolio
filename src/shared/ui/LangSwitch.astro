@@ -1,0 +1,39 @@
+---
+/** ES / EN switch: the current language is marked, the other links to this same page in that language. */
+import { alternatePath, getLocale, locales } from "../i18n/utils";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const current = getLocale(Astro.url);
+const names = { es: "Español", en: "English" } as const;
+---
+
+<nav class:list={["font-mono text-[13px] tracking-[0.02em]", className]} aria-label="Idioma / Language">
+  <ul class="flex items-center gap-1.5">
+    {
+      locales.map((locale, i) => (
+        <li class="flex items-center gap-1.5">
+          {i > 0 && <span class="text-muted" aria-hidden="true">/</span>}
+          {locale === current ? (
+            <span class="text-text" aria-current="true" title={names[locale]}>
+              {locale.toUpperCase()}
+            </span>
+          ) : (
+            <a
+              href={alternatePath(Astro.url.pathname, locale)}
+              hreflang={locale}
+              lang={locale}
+              title={names[locale]}
+              class="text-muted underline-offset-4 transition-colors duration-[400ms] ease-ui hover:text-text hover:underline"
+            >
+              {locale.toUpperCase()}
+            </a>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</nav>

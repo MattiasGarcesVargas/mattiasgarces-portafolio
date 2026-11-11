@@ -1,0 +1,21 @@
+---
+/**
+ * The home's acts, in order. Shared by `/` and `/en/`; each feature reads the language from the URL.
+ * Views compose features so pages stay one-liners and the order lives in a single place.
+ */
+import { Hero } from "../features/hero";
+import { Statement } from "../features/statement";
+import { Manifesto } from "../features/manifesto";
+import { SelectedWork } from "../features/selected-work";
+import { Process } from "../features/process";
+import { About } from "../features/about";
+import { Contact } from "../features/contact";
+---
+
+<Hero />
+<Statement />
+<Manifesto />
+<SelectedWork />
+<Process />
+<About />
+<Contact />

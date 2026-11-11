@@ -1,0 +1,151 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+/* Design tokens — source: Claude Design system "Mattias Garcés — 0°". */
+@theme {
+  --color-paper: #f2f0eb;
+  --color-ink: #0e0e0c;
+  --color-stone: #8a8780;
+  --color-ultramar: #1f3d8c;
+  --color-marino: #14213d;
+  --color-cielo: #a9bedf;
+  --color-pastel: #dce5f2;
+  --color-niebla: #c9d3e3;
+
+
+  --font-display: "Instrument Serif", "Times New Roman", serif;
+  --font-sans: "Geist Variable", "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", ui-monospace, monospace;
+  --font-condensed: "Anton", "Arial Narrow", sans-serif;
+  --font-hand: "Delicious Handrawn", "Bradley Hand", cursive;
+
+  --ease-heavy: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-ui: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --spacing-gutter: clamp(1rem, 3vw, 2.5rem);
+  --spacing-section: clamp(6rem, 14vw, 12rem);
+}
+
+/*
+ * Semantic colors follow the section theme (see [data-theme] below).
+ * `inline` makes utilities read the variable where they are used, not once at :root.
+ */
+@theme inline {
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+}
+
+@layer base {
+  :root,
+  [data-theme="paper"] {
+    --surface: #f2f0eb;
+    --raised: #dce5f2;
+    --text: #0e0e0c;
+    --muted: #5c5f6b;
+    --line: #8a8780;
+    --accent: #1f3d8c;
+    --on-accent: #f2f0eb;
+  }
+
+  [data-theme="ink"] {
+    --surface: #0e0e0c;
+    --raised: #181816;
+    --text: #f2f0eb;
+    --muted: #a8a59e;
+    --line: #4a4e58;
+    --accent: #a9bedf;
+    --on-accent: #0e0e0c;
+  }
+
+  [data-theme="marino"] {
+    --surface: #14213d;
+    --raised: #1b2b4d;
+    --text: #f2f0eb;
+    --muted: #aeb9cf;
+    --line: #3b4c72;
+    --accent: #a9bedf;
+    --on-accent: #14213d;
+  }
+
+  [data-theme] {
+    background-color: var(--surface);
+    color: var(--text);
+  }
+
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+/*
+ * Motion start states. Only applied when JS runs (.js on <html>) and motion is allowed,
+ * so the page is always readable without JS or with reduced motion.
+ * The failsafe animation reveals everything if a script never runs.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-intro] {
+    visibility: hidden;
+    animation: intro-failsafe 0s 5s forwards;
+  }
+
+  .js:not(.is-preloaded) [data-preloader] {
+    display: block;
+    animation: preloader-failsafe 0s 8s forwards;
+  }
+}
+
+@keyframes intro-failsafe {
+  to {
+    visibility: visible;
+  }
+}
+
+@keyframes preloader-failsafe {
+  to {
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+/* Without JS the contact polaroid cannot be dragged, so it steps aside and the links stay visible. */
+html:not(.js) [data-contact-polaroid] {
+  display: none;
+}
+
+/* Lenis recommended styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
