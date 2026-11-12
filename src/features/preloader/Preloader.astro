@@ -1,40 +1,123 @@
 ---
 /**
- * Act 00 — first visit of the session only. Hidden unless JS runs and motion is allowed
- * (see global.css), so it never blocks content.
+ * Act 00 — the trailer. Plays on every fresh load of the home, reloads included (see the inline
+ * script in BaseLayout): a sentence told one word per cut, each word answered by a picture,
+ * every cut shorter than the last, then the whole sentence again in a chain too fast to read
+ * while two black bars close over it. The bars part like a curtain and the page is behind them.
+ * Hidden unless JS runs and motion is allowed (see global.css), so it never blocks content.
+ *
+ * Pictures are whatever `scripts/intro-cuts.mjs` wrote to public/intro/, in file order.
+ * Recreated from the opening of worksruthi.com, in black and one blue.
  */
+import { existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import { getLocale, useTranslations } from "../../shared/i18n/utils";
 
 const t = useTranslations(getLocale(Astro.url));
+
+const cutsDir = join(process.cwd(), "public/intro");
+const cuts = existsSync(cutsDir)
+  ? readdirSync(cutsDir)
+      .filter((file) => /^\d+\.webp$/.test(file))
+      .sort()
+      .map((file) => `/intro/${file}`)
+  : [];
 ---
 
-<div
-  class="fixed inset-0 z-[100] hidden font-mono text-[11px] tracking-[0.08em] uppercase"
-  data-preloader
-  data-motion="preloader"
-  data-theme="ink"
-  aria-hidden="true"
->
-  <div class="absolute inset-x-0 top-0 h-1/2 bg-ink" data-preloader-half="top"></div>
-  <div class="absolute inset-x-0 bottom-0 h-1/2 bg-ink" data-preloader-half="bottom"></div>
-
-  <div class="absolute inset-x-0 top-1/2 h-px bg-[#2a2f3a]" data-preloader-track></div>
-  <div class="absolute inset-x-0 top-1/2 h-px origin-left bg-accent" style="transform: scaleX(0)" data-preloader-fill></div>
-  <div class="absolute top-1/2 left-0 -mt-1.5 -ml-1.5 size-3 rounded-full bg-accent" data-preloader-dot></div>
-
-  <div class="absolute inset-0 text-muted" data-preloader-content>
-    <div class="absolute inset-x-gutter top-7 flex justify-between gap-4">
-      <span>{t.preloader.coordinates}</span>
-      <span class="hidden sm:inline">{t.preloader.loading}</span>
-      <span>{t.brand.city}</span>
-    </div>
-    <span class="absolute bottom-9 left-gutter text-[13px] tracking-[0.02em]">MG · 0°</span>
-    <span
-      class="absolute right-gutter bottom-6 font-display text-[clamp(6rem,15vw,14rem)] leading-[0.8] tracking-[-0.04em] text-text tabular-nums normal-case"
-      data-preloader-count>000</span
-    >
+<div class="trailer fixed inset-0 z-[100] hidden" data-preloader data-motion="preloader" aria-hidden="true">
+  <div class="frame" data-tone="ink" data-preloader-frame>
+    {cuts.map((src) => <div class="cut" data-preloader-cut data-src={src} />)}
+    {
+      t.preloader.words.map((word) => (
+        <p class="word" data-preloader-word>
+          <span>{word}</span>
+        </p>
+      ))
+    }
   </div>
+  <span class="bar bar-top" data-preloader-bar></span>
+  <span class="bar bar-bottom" data-preloader-bar></span>
 </div>
+
+<style>
+  .trailer {
+    overflow: clip;
+    background: var(--color-ink);
+    cursor: default;
+    user-select: none;
+  }
+
+  .frame {
+    position: absolute;
+    inset: 0;
+  }
+  .frame[data-tone="ink"] {
+    background: var(--color-ink);
+    color: var(--color-cobalto);
+  }
+  .frame[data-tone="invert"] {
+    background: var(--color-cobalto);
+    color: var(--color-ink);
+  }
+
+  /* Every still sits in the same place; the motion module shows exactly one at a time. */
+  .cut,
+  .word {
+    position: absolute;
+    inset: 0;
+    visibility: hidden;
+  }
+
+  .cut {
+    background-position: center;
+    background-size: cover;
+  }
+  /* Film grain over every picture; the motion module moves it on each cut. */
+  .cut::after {
+    position: absolute;
+    inset: 0;
+    background: url("/intro/grain.webp") var(--grain-x, 0) var(--grain-y, 0) / 256px 256px repeat;
+    content: "";
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+
+  .word {
+    display: grid;
+    place-items: center;
+    font-family: var(--font-condensed);
+    letter-spacing: -0.01em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .word span {
+    display: block;
+  }
+  /* Trim the line box to the capitals so each word is centred on its letters, not on its metrics. */
+  @supports (text-box: trim-both cap alphabetic) {
+    .word span {
+      text-box: trim-both cap alphabetic;
+    }
+  }
+
+  /* The two halves of the closing shutter; later, the curtain. */
+  .bar {
+    position: absolute;
+    inset-inline: 0;
+    height: 50%;
+    background: var(--color-ink);
+    transform: scaleY(0);
+  }
+  .bar-top {
+    top: 0;
+    transform-origin: 50% 0;
+  }
+  .bar-bottom {
+    bottom: 0;
+    transform-origin: 50% 100%;
+  }
+</style>
 
 <script>
   import "./preloader.motion";

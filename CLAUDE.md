@@ -11,7 +11,8 @@ Portafolio de Mattias Garcés, 21 años, Ambato (Ecuador). Ingeniero en Ciencias
 
 - Objetivo: que las marcas escriban (correo y WhatsApp). Después: Awwwards (Honorable Mention) y CSSDA.
 - Idiomas: español en `/`, inglés en `/en`.
-- Concepto **"0° — La mitad del mundo"**: una línea ecuatorial divide lo visual (arriba) de lo técnico (abajo). Se dibuja en el preloader, divide el hero y es la barra de progreso.
+- Concepto **"0° — La mitad del mundo"**: una línea ecuatorial divide lo visual (arriba) de lo técnico (abajo). Hoy vive solo como barra de progreso: el opening ya no la usa (a Mattias no le gustó la línea inclinada del hero).
+- **Opening**: `features/preloader` es un "tráiler" que recrea el intro de worksruthi.com: NEED / MONEY / FOR / MY / PORSCHE, una palabra por corte y una imagen B/N entre palabra y palabra, cada corte más corto; después la frase se repite en cadena rápida mientras dos barras negras se cierran, y esas barras se abren como telón sobre el `features/hero` (tema carbón: retrato B/N con el nombre cruzándolo). Corre en cada carga nueva del home, recargas incluidas; no al volver atrás ni al navegar dentro del sitio.
 
 ## 2. Stack
 
@@ -36,6 +37,7 @@ Claroscuro de marfil y carbón, y un solo pigmento precioso: el **ultramar** (la
 | `ink` | `#0E0E0C` | Texto y tema carbón |
 | `stone` | `#8A8780` | Solo líneas y retícula (no texto pequeño) |
 | `ultramar` | `#1F3D8C` | Acento sobre marfil |
+| `cobalto` | `#2F5BD0` | Solo las palabras del tráiler sobre carbón (ultramar no se lee sobre negro) |
 | `marino` | `#14213D` | Tema marino (trabajo y casos) |
 | `cielo` | `#A9BEDF` | Acento sobre carbón y marino |
 | `pastel` | `#DCE5F2` | Superficies elevadas sobre marfil |
@@ -44,9 +46,11 @@ Claroscuro de marfil y carbón, y un solo pigmento precioso: el **ultramar** (la
 - Tres temas por sección con `data-theme="paper|ink|marino"`; los colores semánticos (`surface`, `text`, `muted`, `line`, `accent`) cambian solos.
 - `accent` aparece en máximo **un lugar por pantalla** (la línea o una palabra).
 - Tipografía: Instrument Serif (display), Geist (texto), Geist Mono (solo datos reales).
-- Anton (condensada) solo en la frase horizontal después del hero (`features/statement`), como sustituto gratuito de Schabo Condensed.
+- Anton (condensada) solo en la frase horizontal después del hero (`features/statement`, sustituto gratuito de Schabo Condensed) y en las palabras del tráiler (`features/preloader`, en lugar de la Impact del original).
 - Delicious Handrawn (a mano) solo en el bloque "Contáctame" del footer, igual que en jhosuemesias.com: una polaroid arrastrable tapa el mensaje y los enlaces.
 - Bordes rectos, sin sombras, sin gradientes. Retícula de 12 columnas.
+- Las imágenes del tráiler nunca van a color: `node scripts/intro-cuts.mjs` las pasa a blanco y negro (de carbón a marfil) y genera el grano de película que va encima.
+- Sin indicadores de estado con punto, sin etiquetas entre paréntesis en mono, sin sellos decorativos.
 
 ## 4. Arquitectura: vertical slices
 
@@ -75,7 +79,9 @@ src/
   content/work/             un .mdx por proyecto
   content.config.ts         esquema de la colección work
 public/
-  fonts/  brand/  work/<slug>/
+  fonts/  brand/  work/<slug>/  intro/ (generado)  me/
+assets/intro/               originales del tráiler (no se publican); el orden alfabético es el orden en pantalla
+scripts/intro-cuts.mjs      assets/intro/* → public/intro/NN.webp entonadas
 ```
 
 Reglas:
@@ -112,5 +118,7 @@ Reglas:
 - [x] Foto de la polaroid del footer (`public/contact/mattias.webp`)
 - [x] Grabaciones de OMAKASE, Proalimec y Pulsocont (`public/work/<slug>/loop.mp4` + `poster.jpg`, 1280×800, ~8–9 s)
 - [x] Links de redes, correo y WhatsApp (`src/shared/lib/social.ts`)
+- [x] Imágenes del tráiler: cuatro fotos de Porsche que pasó Mattias (aro, llaves, frontal, GT3) en `assets/intro/`, en ese orden; van entre las cinco palabras. Falta confirmar que tiene derecho a publicarlas.
+- [ ] Retrato recortado sin fondo (PNG) si se quiere el nombre pasando por detrás de él en el hero
 - [ ] Dominio (`mattiasgarces`), permisos de Proalimec y Pulsotek, rol en Pulsocont
 - [ ] Licencias de fuentes PP (por ahora alternativas gratuitas)

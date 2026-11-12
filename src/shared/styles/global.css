@@ -7,6 +7,8 @@
   --color-ink: #0e0e0c;
   --color-stone: #8a8780;
   --color-ultramar: #1f3d8c;
+  /* Ultramar lit up: the only blue that holds on carbon at poster size (3.2:1). Trailer only. */
+  --color-cobalto: #2f5bd0;
   --color-marino: #14213d;
   --color-cielo: #a9bedf;
   --color-pastel: #dce5f2;

@@ -34,10 +34,17 @@ const alternates = locales.map((l) => ({ locale: l, href: new URL(alternatePath(
     <meta name="theme-color" content="#f2f0eb" />
     <ClientRouter />
     <script is:inline data-astro-rerun>
-      // Runs before paint: enables motion start states and skips the preloader after the first visit.
+      // Runs before paint: enables motion start states and decides whether the trailer plays.
+      // It plays on every fresh arrival at the home, reloads included; never on back/forward,
+      // on other pages, or when arriving from another page of this site.
       document.documentElement.classList.add("js");
       try {
-        if (sessionStorage.getItem("mg:preloaded")) document.documentElement.classList.add("is-preloaded");
+        var nav = performance.getEntriesByType("navigation")[0];
+        var fresh = /^\/(en\/?)?$/.test(location.pathname) && !(nav && nav.type === "back_forward");
+        if (fresh && !(nav && nav.type === "reload") && document.referrer) {
+          fresh = new URL(document.referrer).origin !== location.origin;
+        }
+        if (!fresh) document.documentElement.classList.add("is-preloaded");
       } catch {}
     </script>
   </head>
