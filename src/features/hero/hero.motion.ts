@@ -1,59 +1,39 @@
 import { gsap, registerMotion } from "../../shared/motion/core";
 import { introReady } from "../../shared/motion/intro";
 
-/** Max tilt of the horizon, in degrees. */
-const MAX_TILT = 3;
-
 registerMotion("hero", (root, { desktop, reduce }) => {
   if (reduce) return;
 
   const q = gsap.utils.selector(root);
-  const horizon = root.querySelector<HTMLElement>("[data-hero-horizon]");
-  const line = horizon?.querySelector<HTMLElement>("[data-equator]");
-  const [topWord, bottomWord] = q("[data-hero-word]");
+  const frame = q("[data-hero-frame]");
+  const [firstWord, lastWord] = q("[data-hero-word]");
 
-  // Intro: the line opens from its centre, then the name rises out of it.
-  // "Mattias" comes up from below the line, "Garcés" drops down from above it.
+  // Intro: the portrait opens from its own horizon, then the name comes through it —
+  // "Mattias" rising from below, "Garcés" dropping from above.
   const intro = gsap
     .timeline({ paused: true })
     .set(q("[data-intro]"), { visibility: "visible" })
-    .from(line ?? [], { scaleX: 0, transformOrigin: "50% 50%", duration: 1.4, ease: "curtain" })
-    .from(topWord ?? [], { yPercent: 105, duration: 1.3 }, "-=0.75")
-    .from(bottomWord ?? [], { yPercent: -105, duration: 1.3 }, "<")
-    .from(q("[data-hero-fade]"), { autoAlpha: 0, y: 12, duration: 0.9, stagger: 0.06 }, "-=0.95");
+    .fromTo(
+      frame,
+      { clipPath: "inset(50% 0% 50% 0%)" },
+      { clipPath: "inset(0% 0% 0% 0%)", duration: 1.4, ease: "curtain" },
+    )
+    .from(q("[data-hero-photo]"), { scale: 1.3, duration: 1.9 }, 0)
+    .from(firstWord ?? [], { yPercent: 115, duration: 1.3 }, 0.4)
+    .from(lastWord ?? [], { yPercent: -115, duration: 1.3 }, 0.5)
+    .from(q("[data-hero-fade]"), { autoAlpha: 0, y: 12, duration: 0.9, stagger: 0.06 }, 0.8);
 
   void introReady.then(() => intro.play());
 
-  // Scroll: the hemispheres drift apart and the details clear out.
+  // Scroll: the name parts like a curtain and leaves him alone in the frame.
+  // Sideways on desktop; on phones the lines sit above and below, so they part vertically.
   gsap
     .timeline({
       scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: desktop ? 1 : true },
       defaults: { ease: "none" },
     })
-    .to(q('[data-hero-half="top"]'), { yPercent: -45 }, 0)
-    .to(q('[data-hero-half="bottom"]'), { yPercent: 45 }, 0)
-    .to(q("[data-hero-out]"), { autoAlpha: 0, duration: 0.35 }, 0)
-    .to(horizon ?? [], { autoAlpha: 0, duration: 0.25 }, 0.75);
-
-  if (!desktop || !horizon) return;
-
-  // A living horizon: the line leans toward the pointer, pivoting on its centre.
-  const tilt = gsap.quickTo(horizon, "rotation", { duration: 0.6, ease: "ui" });
-
-  const onMove = (event: PointerEvent) => {
-    const box = horizon.getBoundingClientRect();
-    const dx = event.clientX - (box.left + box.width / 2);
-    const dy = event.clientY - (box.top + box.height / 2);
-    const angle = (Math.atan(dy / (Math.abs(dx) || 1)) * 180) / Math.PI;
-    tilt(gsap.utils.clamp(-MAX_TILT, MAX_TILT, Math.sign(dx || 1) * angle * 0.25));
-  };
-  const onLeave = () => tilt(0);
-
-  root.addEventListener("pointermove", onMove);
-  root.addEventListener("pointerleave", onLeave);
-
-  return () => {
-    root.removeEventListener("pointermove", onMove);
-    root.removeEventListener("pointerleave", onLeave);
-  };
+    .to(q('[data-hero-line="first"]'), desktop ? { xPercent: 30 } : { yPercent: -70 }, 0)
+    .to(q('[data-hero-line="last"]'), desktop ? { xPercent: -30 } : { yPercent: 70 }, 0)
+    .to(frame, { yPercent: 16, scale: 1.08 }, 0)
+    .to(q("[data-hero-out]"), { autoAlpha: 0, duration: 0.35 }, 0);
 });

@@ -20,16 +20,14 @@ export const en: Dictionary = {
     contact: "Let's talk",
   },
   preloader: {
-    coordinates: "0°00′00″",
-    loading: "Loading the middle of the world",
+    words: ["Need", "money", "for", "my", "Porsche"],
   },
   hero: {
-    designLabel: "(Design)",
+    portraitAlt: "Mattias Garcés sitting at a table in a white shirt, in black and white.",
     design: "Visual identity · Art direction",
-    codeLabel: "(Code)",
     code: "Engineering · Web experiences",
     available: "Available for projects",
-    scroll: "(Scroll)",
+    scroll: "Scroll",
   },
   statement: {
     // TODO(content): copy given by Mattias; "Webflow Expert" may not match his stack (Astro/React).
