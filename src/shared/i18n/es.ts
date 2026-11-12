@@ -20,16 +20,15 @@ export const es = {
     contact: "Hablemos",
   },
   preloader: {
-    coordinates: "0°00′00″",
-    loading: "Cargando la mitad del mundo",
+    // One word per cut of the opening montage. Kept in English in both languages, as Mattias asked.
+    words: ["Need", "money", "for", "my", "Porsche"],
   },
   hero: {
-    designLabel: "(Diseño)",
+    portraitAlt: "Mattias Garcés sentado a una mesa, con camisa blanca, en blanco y negro.",
     design: "Identidad visual · Dirección de arte",
-    codeLabel: "(Código)",
     code: "Ingeniería · Experiencias web",
     available: "Disponible para proyectos",
-    scroll: "(Scroll)",
+    scroll: "Scroll",
   },
   statement: {
     // TODO(content): copy given by Mattias; "Webflow Expert" may not match his stack (Astro/React).
